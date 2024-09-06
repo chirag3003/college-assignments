@@ -11,42 +11,59 @@
 // #include <ctype.h>
 #include <string.h>
 
-#define MAX 100
-
-char stack[MAX];
+#define STACK_SIZE 100
+char *stack[STACK_SIZE];
 int top = -1;
 
-void push(char c)
+int isEmpty()
 {
-    if (top == MAX - 1)
-    {
-        printf("Stack overflow\n");
-        return;
-    }
-    stack[++top] = c;
+    return top == -1;
 }
 
-char pop()
+int isFull()
 {
-    if (top == -1)
-    {
-        printf("Stack underflow\n");
-        return -1;
-    }
-    return stack[top--];
+    return top == STACK_SIZE - 1;
 }
 
-void display()
+void push(char *stack[], char *item)
 {
-    if (top == -1)
+    if (isFull())
+    {
+        printf("Stack is full\n");
+    }
+    else
+    {
+        top++;
+        stack[top] = item;
+    }
+}
+
+char *pop(char *stack[])
+{
+    if (isEmpty())
     {
         printf("Stack is empty\n");
-        return;
+        return NULL;
     }
-    printf("Stack elements are: \n");
-    for (int i = 0; i <= top; i++)
+    else
     {
-        printf("%c \n", stack[i]);
+        return stack[top--];
+    }
+}
+
+void display(char *stack[])
+{
+    if (isEmpty())
+    {
+        printf("Stack is empty\n");
+    }
+    else
+    {
+        printf("Stack elements are: \n");
+        for (int i = 0; i <= top; i++)
+        {
+            printf("%s\n", stack[i]);
+        }
     }
 }
 
@@ -104,40 +121,44 @@ void infixToPostfix(char *infix, char *postfix)
     char c;
     for (i = 0; infix[i] != '\0'; i++)
     {
-        c = infix[i];
-        if (c == '(')
+        char _c = infix[i];
+
+        char *c = (char *)malloc(2 * sizeof(char));
+        c[0] = _c;
+        c[1] = '\0';
+        if (c[0] == '(')
         {
-            push(c);
+            push(stack, c);
         }
-        else if (c == ')')
+        else if (c[0] == ')')
         {
             while (top != -1 && stack[top] != '(')
             {
-                postfix[j++] = pop();
+                postfix[j++] = pop(stack);
             }
-            pop(); // Remove '(' from stack
+            pop(stack); // Remove '(' from stack
         }
-        else if (isOperator(c))
+        else if (isOperator(c[0]))
         {
-            while (top != -1 && precedence(stack[top]) >= precedence(c))
+            while (top != -1 && precedence(stack[top]) >= precedence(c[0]))
             {
-                postfix[j++] = pop();
+                postfix[j++] = pop(stack);
             }
-            push(c);
+            push(c, stack);
         }
         else
-            postfix[j++] = c;
+            postfix[j++] = c[0];
     }
     while (top != -1)
     {
-        postfix[j++] = pop();
+        postfix[j++] = pop(stack);
     }
     postfix[j] = '\0';
 }
 
 void infixToPrefix(char *infix, char *prefix)
 {
-    char reversedInfix[MAX], postfix[MAX];
+    char reversedInfix[STACK_SIZE], postfix[STACK_SIZE];
     strcpy(reversedInfix, infix);
     reverse(reversedInfix);
     replaceParentheses(reversedInfix);
@@ -148,7 +169,7 @@ void infixToPrefix(char *infix, char *prefix)
 
 int main()
 {
-    char infix[MAX], postfix[MAX], prefix[MAX];
+    char infix[STACK_SIZE], postfix[STACK_SIZE], prefix[STACK_SIZE];
     int choice;
 
     while (1)
@@ -181,14 +202,14 @@ int main()
             printf("Enter the element to be pushed: ");
             char c;
             scanf(" %c", &c);
-            push(c);
+            push(stack, c);
             break;
         case 4:
-            char ch = pop();
+            char ch = pop(stack);
             printf("Popped element: %c\n", ch);
             break;
         case 5:
-            display();
+            display(stack);
             break;
         case 6:
             exit(0);
