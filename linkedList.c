@@ -18,7 +18,9 @@ void printMenu()
     printf("3. Display\n");
     printf("4. Find length\n");
     printf("5. Insert\n");
-    printf("6. Exit\n");
+    printf("6. Reverse\n");
+    printf("7. Sort\n");
+    printf("8. Exit\n");
     printf("Enter your choice: ");
 }
 int length(struct node *headNode);
@@ -122,6 +124,77 @@ int length(struct node *headNode)
     }
     return count;
 }
+void reverse(struct node *headNode)
+{
+    struct node *prev = NULL;
+    struct node *current = headNode->next;
+    struct node *next = NULL;
+    while (current != NULL)
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    headNode->next = prev;
+}
+void sort(struct node *headNode)
+{
+    if (headNode->next == NULL || headNode->next->next == NULL)
+        return;
+
+    int l = length(headNode);
+    struct node *prev = NULL;
+    struct node *current = NULL;
+    struct node *temp = NULL;
+    for (int i = 1; i < l; i++)
+    {
+        prev = headNode;
+        current = headNode->next;
+        for (int j = 0; j < l; j++)
+        {
+            temp = current->next;
+            if (temp == NULL)
+                break;
+            if (current->prn > temp->prn)
+            {
+                prev->next = temp;
+                current->next = temp->next;
+                temp->next = current;
+                prev = temp;
+            }
+            else
+            {
+                prev = current;
+                current = current->next;
+            }
+        }
+    }
+}
+struct node *sortedMerge(struct node *a, struct node *b)
+{
+    struct node *result = (struct node *)malloc(sizeof(struct node));
+    struct node *ptr = &result;
+    while (a != NULL && b != NULL)
+    {
+        if (a->prn < b->prn)
+        {
+            ptr->next = a;
+            a = a->next;
+        }
+        else
+        {
+            ptr->next = b;
+            b = b->next;
+        }
+        ptr = ptr->next;
+    }
+    if (a != NULL)
+        ptr->next = a;
+    else
+        ptr->next = b;
+    return &result;
+}
 
 int main()
 {
@@ -155,6 +228,12 @@ int main()
             insert(&headNode);
             break;
         case 6:
+            reverse(&headNode);
+            break;
+        case 7:
+            sort(&headNode);
+            break;
+        case 8:
             exit(0);
         default:
             printf("Invalid choice\n");
