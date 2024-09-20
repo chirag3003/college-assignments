@@ -1,3 +1,12 @@
+/*
+    Nmae: Chirag Bhalotia
+    PRN: 1032232301
+    Panel: F
+    Roll: 48
+    Problem: Implement trees and its functions 
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +17,19 @@ struct treeNode
     struct treeNode *left;
     struct treeNode *right;
 };
+
+struct treeNode *stack[100];
+int top = -1;
+
+void push(struct treeNode *node)
+{
+    stack[++top] = node;
+}
+
+struct treeNode *pop()
+{
+    return stack[top--];
+}
 
 struct treeNode *createNode(char *data)
 {
@@ -113,6 +135,25 @@ void traverseInOrder(struct treeNode *root)
     traverseInOrder(root->right);
 }
 
+void inOrder(struct treeNode *root)
+{
+    top = -1;
+    struct treeNode *current = root;
+    while (1)
+    {
+        while (current != NULL)
+        {
+            push(current);
+            current = current->left;
+        }
+        if (top == -1)
+            break;
+        current = pop();
+        printf("%s ", current->data);
+        current = current->right;
+    }
+}
+
 void traversePreOrder(struct treeNode *root)
 {
     if (root == NULL)
@@ -122,6 +163,25 @@ void traversePreOrder(struct treeNode *root)
     traversePreOrder(root->right);
 }
 
+void preOrder(struct treeNode *root)
+{
+    top = -1;
+    struct treeNode *current = root;
+    while (1)
+    {
+        while (current != NULL)
+        {
+            printf("%s ", current->data);
+            push(current);
+            current = current->left;
+        }
+        if (top == -1)
+            break;
+        current = pop();
+        current = current->right;
+    }
+}
+
 void traversePostOrder(struct treeNode *root)
 {
     if (root == NULL)
@@ -129,6 +189,36 @@ void traversePostOrder(struct treeNode *root)
     traversePostOrder(root->left);
     traversePostOrder(root->right);
     printf("%s ", root->data);
+}
+
+void postOrder(struct treeNode *root)
+{
+    top = -1;
+    struct treeNode *current = root;
+    struct treeNode *prev = NULL;
+    do
+    {
+        while (current != NULL)
+        {
+            push(current);
+            current = current->left;
+        }
+        while (current == NULL && top != -1)
+        {
+            current = stack[top];
+            if (current->right == NULL || current->right == prev)
+            {
+                printf("%s ", current->data);
+                pop();
+                prev = current;
+                current = NULL;
+            }
+            else
+            {
+                current = current->right;
+            }
+        }
+    } while (top != -1);
 }
 
 int main()
@@ -162,13 +252,13 @@ int main()
             insertCustom(&root);
             break;
         case 3:
-            traverseInOrder(&root);
+            inOrder(&root);
             break;
         case 4:
-            traversePreOrder(&root);
+            preOrder(&root);
             break;
         case 5:
-            traversePostOrder(&root);
+            postOrder(&root);
             break;
         case 6:
             exit(0);
