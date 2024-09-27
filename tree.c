@@ -3,9 +3,8 @@
     PRN: 1032232301
     Panel: F
     Roll: 48
-    Problem: Implement trees and its functions 
+    Problem: Implement trees and its functions
 */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -205,16 +204,16 @@ void postOrder(struct treeNode *root)
         }
         while (current == NULL && top != -1)
         {
-            current = stack[top];
+            current = pop();
             if (current->right == NULL || current->right == prev)
             {
                 printf("%s ", current->data);
-                pop();
                 prev = current;
                 current = NULL;
             }
             else
             {
+                push(current);
                 current = current->right;
             }
         }
