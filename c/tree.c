@@ -47,7 +47,8 @@ void printMenu()
     printf("3. Display InOrder\n");
     printf("4. Display PreOrder\n");
     printf("5. Display PostOrder\n");
-    printf("6. Exit\n");
+    printf("6. Delete Node\n");
+    printf("7. Exit\n");
     printf("Enter your choice: ");
 }
 
@@ -82,6 +83,92 @@ void insert(struct treeNode *root, char *data)
         {
             insert(root->right, data);
         }
+    }
+}
+
+void deleteNode(struct treeNode *root)
+{
+    printf("Enter node to be deleted");
+    char data[10];
+    scanf("%s", data);
+    struct treeNode *current = root;
+    struct treeNode *prev = NULL;
+    while (current != NULL)
+    {
+        int cmp = strcmp(data, current->data);
+        if (cmp < 0)
+        {
+            prev = current;
+            current = current->left;
+        }
+        else if (cmp > 0)
+        {
+            prev = current;
+            current = current->right;
+        }
+        else
+        {
+            break;
+        }
+    }
+    if (current == NULL)
+    {
+        printf("Node not found\n");
+        return;
+    }
+    if (current->left == NULL && current->right != NULL)
+    {
+        if (prev->left == current)
+        {
+            prev->left = current->right;
+        }
+        else
+        {
+            prev->right = current->right;
+        }
+        free(current);
+    }
+    else if (current->left != NULL && current->right == NULL)
+    {
+        if (prev->left == current)
+        {
+            prev->left = current->left;
+        }
+        else
+        {
+            prev->right = current->right;
+        }
+        free(current);
+    }
+    else if (current->left == NULL && current->right == NULL)
+    {
+        if (prev->left == current)
+        {
+            prev->left = NULL;
+        }
+        else
+        {
+            prev->right = NULL;
+        }
+        free(current);
+    }
+    else
+    {
+        struct treeNode *temp = current->right;
+        while (temp->left != NULL)
+        {
+            temp = temp->left;
+        }
+        temp->left = current->left;
+        if (prev->left == current)
+        {
+            prev->left = current->right;
+        }
+        else
+        {
+            prev->right = current->right;
+        }
+        free(current);
     }
 }
 
@@ -260,6 +347,8 @@ int main()
             postOrder(&root);
             break;
         case 6:
+            deleteNode(&root);
+        case 7:
             exit(0);
         default:
             exit(0);
