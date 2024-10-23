@@ -2,6 +2,8 @@
     "files.associations": {
         "ostream": "cpp",
         "cstdlib": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "fstream": "cpp",
+        "iostream": "cpp"
     }
 }
