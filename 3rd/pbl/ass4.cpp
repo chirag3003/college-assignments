@@ -115,7 +115,7 @@ int main() {
     root = insert(root, 30); 
     root = insert(root, 40); 
     root = insert(root, 50); 
-    root = insert(root, 25); 
+    root = insert(root, 60); 
     
     /* The constructed AVL Tree would be 
               30 
