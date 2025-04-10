@@ -17,9 +17,7 @@ public:
 
 class HashTable {
 public:
-  HashTable(int size) : size(size), inUse(0) {
-    table.resize(size);
-  }
+  HashTable(int size) : size(size), inUse(0) { table.resize(size); }
 
   void insert(int key, int value) {
     // Checking if the table is full
@@ -32,8 +30,8 @@ public:
     // Finding the index of the key
     int index = key % size;
     inUse++;
-    int tried  = 0;
-    while (table[index] != NULL && tried != size){
+    int tried = 0;
+    while (table[index] != NULL && tried != size) {
       index = (index + 1) % size;
       tried++;
     }
@@ -41,10 +39,11 @@ public:
     table[index] = new HashTableValue(key, value);
   }
 
-  HashTableValue* search(int key) {
+  HashTableValue *search(int key) {
     int index = key % size;
     int tried = 0;
-    while(table[index] == NULL || (table[index]->key != key && tried != size)){
+    while (table[index] == NULL ||
+           (table[index]->key != key && tried != size)) {
       tried++;
       index = (index + 1) % size;
     }
@@ -56,7 +55,8 @@ public:
 
   void print() {
     for (int i = 0; i < size; i++) {
-      cout << "(" << table[i]->key << ", " << table[i]->value << ") ";
+      if (table[i] != NULL)
+        cout << "(" << table[i]->key << ", " << table[i]->value << ") ";
     }
     cout << endl;
   }
@@ -64,26 +64,39 @@ public:
 private:
   int size;
   int inUse;
-  vector<HashTableValue*> table;
+  vector<HashTableValue *> table;
 };
 
 int main() {
   HashTable ht(10);
-  ht.insert(1, 10);
-  ht.insert(11, 20);
-  ht.insert(31, 30);
-  ht.insert(12, 40);
-  ht.insert(23, 50);
-  ht.insert(43, 60);
-  ht.insert(32, 70);
-  ht.insert(8, 80);
-  ht.insert(9, 90);
-  ht.insert(10, 100);
-  ht.insert(12, 100);
-  ht.print();
-  if(ht.search(10) != NULL) {
-    cout << ht.search(10)->value << endl;
-  }
+  int choice, key, value;
+  do {
+    cout << "Menu:\n1. Insert\n2. Search\n3. Print\n4. Exit\nEnter your choice: ";
+    cin >> choice;
+    switch (choice) {
+      case 1:
+        cout << "Enter key and value to insert: ";
+        cin >> key >> value;
+        ht.insert(key, value);
+        break;
+      case 2:
+        cout << "Enter key to search: ";
+        cin >> key;
+        if (ht.search(key) != NULL) {
+          cout << "Value: " << ht.search(key)->value << endl;
+        } else {
+          cout << "Key not found" << endl;
+        }
+        break;
+      case 3:
+        ht.print();
+        break;
+      case 4:
+        cout << "Exiting..." << endl;
+        break;
+      default:
+        cout << "Invalid choice. Please try again." << endl;
+    }
+  } while (choice != 4);
   return 0;
 }
-
